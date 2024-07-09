@@ -6,9 +6,7 @@ const link = `https://api.themoviedb.org/3/trending/movie/day?language=en-US&api
 const getUrl = () => {
   return axios
     .get(link)
-    .then((response) => {
-      response.data.results;
-    })
+    .then((response) => response.data.results)
     .catch((error) => {
       console.log("error", error);
       return [];
