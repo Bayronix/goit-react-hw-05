@@ -1,20 +1,20 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-const TrendingMovies = ({ movies }) => (
+const HomePage = ({ movies }) => (
   <>
     <h1>Trending Today</h1>
     <ul>
       {movies.map((movie) => (
         <li key={movie.id}>
-          <Link to={`/movie/${movie.id}`}>{movie.title}</Link>
+          <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
         </li>
       ))}
     </ul>
   </>
 );
 
-TrendingMovies.propTypes = {
+HomePage.propTypes = {
   movies: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
@@ -23,4 +23,4 @@ TrendingMovies.propTypes = {
   ).isRequired,
 };
 
-export default TrendingMovies;
+export default HomePage;

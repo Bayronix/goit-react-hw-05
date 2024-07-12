@@ -1,56 +1,96 @@
-import { Link, NavLink, Route, Routes, useParams } from "react-router-dom";
+import { NavLink, Route, Routes } from "react-router-dom";
 import { useEffect, useState } from "react";
-import TrendingMovies from "./TrendingMovies/TrendingMovies";
-import TrendingMoviesApi from "./TrendingMovies/TrendingMoviesApi";
-import SearchForm from "./SearchMovie/SearchMovie";
-import MovieDetails from "./MovieDetails/MovieDetails";
-import axios from "axios";
+import HomePage from "../pages/HomePage";
+import {
+  TrendingMoviesApi,
+  SearchMoviesApi,
+  MovieDetailsApi,
+} from "../Api/Api";
+import MoviesPage from "../pages/MoviesPage";
+import MovieDetailsPage from "../pages/MovieDetailsPage";
+import MovieCast from "./MovieCast/MovieCast";
+import MovieReviews from "./MovieReviews/MovieReviews";
 
 const App = () => {
   const [movies, setMovies] = useState([]);
-
-  useEffect(() => {
-    TrendingMoviesApi().then((data) => {
-      setMovies(data);
-    });
-  }, []);
-  const { id } = useParams();
+  const [searchMovies, setSearchMovies] = useState([]);
   const [movie, setMovie] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const apiKey = "3ad8d355e7df16ea15ed8d39f76c4341";
-    const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`;
+    const fetchTrendingMovies = async () => {
+      try {
+        const moviesData = await TrendingMoviesApi();
+        setMovies(moviesData);
+        setError(null);
+      } catch (error) {
+        console.error("Error fetching trending movies:", error);
+        setError("Failed to fetch trending movies.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    axios
-      .get(url)
-      .then((response) => {
-        setMovie(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching movie details:", error);
-        setError("Failed to fetch movie details.");
-      });
-  }, [id]);
+    fetchTrendingMovies();
+  }, []);
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  const handleSearch = async (query) => {
+    try {
+      const searchResults = await SearchMoviesApi(query);
+      setSearchMovies(searchResults);
+      setError(null);
+    } catch (error) {
+      console.error("Error searching movies:", error);
+      setError("Failed to search movies.");
+    }
+  };
 
-  if (!movie) {
-    return <div>Loading...</div>;
-  }
+  const fetchAndSetMovieDetails = async (id) => {
+    try {
+      const movieData = await MovieDetailsApi(id);
+      setMovie(movieData);
+      setError(null);
+    } catch (error) {
+      console.error("Error fetching movie details:", error);
+      setError("Failed to fetch movie details.");
+      setMovie(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
       <nav>
-        <NavLink to="/Home">Home</NavLink>
-        <NavLink to="/Movies">Movies</NavLink>
+        <NavLink to="/home">Home</NavLink>
+        <NavLink to="/movies">Movies</NavLink>
       </nav>
       <Routes>
-        <Route path="/Home" element={<TrendingMovies movies={movies} />} />
-        <Route path="/Movies" element={<SearchForm />} />
-        <Route path="/movie/:id" element={<MovieDetails movie={movie} />} />
+        <Route path="/home" element={<HomePage movies={movies} />} />
+        <Route
+          path="/movies"
+          element={
+            <MoviesPage
+              handleSearch={handleSearch}
+              searchMovies={searchMovies}
+            />
+          }
+        />
+        <Route
+          path="/movies/:id"
+          element={
+            <MovieDetailsPage
+              fetchAndSetMovieDetails={fetchAndSetMovieDetails}
+              movie={movie}
+              error={error}
+              loading={loading}
+            />
+          }
+        >
+          <Route path="cast" element={<MovieCast />} />
+          <Route path="reviews" element={<MovieReviews />} />
+        </Route>
       </Routes>
     </>
   );
