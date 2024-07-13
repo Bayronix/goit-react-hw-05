@@ -55,4 +55,45 @@ const MovieDetailsApi = (id) => {
 
 // MovieDetails
 
-export { TrendingMoviesApi, MovieDetailsApi, SearchMoviesApi };
+const MovieCreditsApi = () => {
+  const url =
+    "https://api.themoviedb.org/3/movie/movie_id/credits?language=en-US";
+
+  return axios
+    .get(url, {
+      params: {
+        api_key: apiKey,
+      },
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error fetching movie details:", error);
+      return null;
+    });
+};
+// MovieCredit
+
+const MovieReviewsApi = () => {
+  const url =
+    "https://api.themoviedb.org/3/movie/movie_id/reviews?language=en-US";
+
+  return axios
+    .get(url, {
+      params: {
+        api_key: apiKey,
+      },
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error fetching movie details:", error);
+      return null;
+    });
+};
+// MovieReviews
+export {
+  TrendingMoviesApi,
+  MovieDetailsApi,
+  SearchMoviesApi,
+  MovieCreditsApi,
+  MovieReviewsApi,
+};

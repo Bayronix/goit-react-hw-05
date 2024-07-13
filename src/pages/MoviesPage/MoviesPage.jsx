@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { Formik, Form, Field } from "formik";
 import { Link } from "react-router-dom";
-
+import Styles from "./MoviesPage.module.css";
 const MoviesPage = ({ handleSearch, searchMovies }) => {
   return (
     <div>
@@ -22,10 +22,10 @@ const MoviesPage = ({ handleSearch, searchMovies }) => {
         )}
       </Formik>
 
-      <ul>
-        {searchMovies.map((searchMovie) => (
-          <li key={searchMovie.id}>
-            <Link to={`/movies/${searchMovie.id}`}>{searchMovie.title}</Link>
+      <ul className={Styles.ul}>
+        {searchMovies.map((movie) => (
+          <li className={Styles.ul} key={movie.id}>
+            <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
           </li>
         ))}
       </ul>

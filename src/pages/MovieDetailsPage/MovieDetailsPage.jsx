@@ -1,18 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import PropTypes from "prop-types";
-
-const MovieDetailsPage = ({
-  fetchAndSetMovieDetails,
-  movie,
-  error,
-  loading,
-}) => {
+import Styles from "./MovieDetailsPage.module.css";
+import MovieCast from "../../components/MovieCast/MovieCast";
+const MovieDetailsPage = ({ handleMovieDetails, movie, error, loading }) => {
   const { id } = useParams();
 
   useEffect(() => {
-    fetchAndSetMovieDetails(id);
-  }, [id, fetchAndSetMovieDetails]);
+    handleMovieDetails(id);
+  }, [id, handleMovieDetails]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -36,12 +32,13 @@ const MovieDetailsPage = ({
       <p>User Score: {votePercent}%</p>
       <p>Overview: {movie.overview}</p>
       <p>Genres: {movie.genres.map((genre) => genre.name).join(", ")}</p>
+      <MovieCast />
     </div>
   );
 };
 
 MovieDetailsPage.propTypes = {
-  fetchAndSetMovieDetails: PropTypes.func.isRequired,
+  handleMovieDetails: PropTypes.func.isRequired,
   movie: PropTypes.shape({
     title: PropTypes.string.isRequired,
     poster_path: PropTypes.string,

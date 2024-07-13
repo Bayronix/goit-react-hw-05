@@ -1,11 +1,18 @@
-import { Outlet } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
-export default function MovieCast() {
+const MovieCast = () => {
   return (
     <div>
-      <ul></ul>
-      <h1>Cast Information</h1>
-      <Outlet />
+      <h3>Additional Information</h3>
+      <NavLink to="cast">Cast</NavLink>
+      <ul>
+        {/* {credits.cast &&
+          credits.cast.map((castMember) => (
+            <li key={castMember.id}>{castMember.name}</li>
+          ))} */}
+      </ul>
     </div>
   );
-}
+};
+
+export default MovieCast;

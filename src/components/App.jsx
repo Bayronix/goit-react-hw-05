@@ -1,19 +1,28 @@
 import { NavLink, Route, Routes } from "react-router-dom";
 import { useEffect, useState } from "react";
-import HomePage from "../pages/HomePage";
+import HomePage from "../pages/HomePage/HomePage";
 import {
   TrendingMoviesApi,
   SearchMoviesApi,
   MovieDetailsApi,
+  MovieCreditsApi,
+  MovieReviewsApi,
 } from "../Api/Api";
-import MoviesPage from "../pages/MoviesPage";
-import MovieDetailsPage from "../pages/MovieDetailsPage";
+// Pages
+import MoviesPage from "../pages/MoviesPage/MoviesPage";
+import MovieDetailsPage from "../pages/MovieDetailsPage/MovieDetailsPage";
+import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
+// Components
 import MovieCast from "./MovieCast/MovieCast";
 import MovieReviews from "./MovieReviews/MovieReviews";
+// Styles
+import Styles from "./App.module.css";
 
 const App = () => {
   const [movies, setMovies] = useState([]);
   const [searchMovies, setSearchMovies] = useState([]);
+  const [credits, setCredits] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [movie, setMovie] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -46,7 +55,7 @@ const App = () => {
     }
   };
 
-  const fetchAndSetMovieDetails = async (id) => {
+  const handleMovieDetails = async (id) => {
     try {
       const movieData = await MovieDetailsApi(id);
       setMovie(movieData);
@@ -60,38 +69,82 @@ const App = () => {
     }
   };
 
+  const handleCredits = async () => {
+    try {
+      const credit = await MovieCreditsApi();
+      setCredits(credit);
+      setError(null);
+    } catch (error) {
+      console.error("Error fetching movie details:", error);
+      setError("Failed to fetch movie details.");
+      setMovie(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleReviews = async () => {
+    try {
+      const review = await MovieReviewsApi();
+      setReviews(review);
+    } catch (error) {
+      console.error("Error fetching movie details:", error);
+      setError("Failed to fetch movie details.");
+      setMovie(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
-      <nav>
-        <NavLink to="/home">Home</NavLink>
-        <NavLink to="/movies">Movies</NavLink>
-      </nav>
-      <Routes>
-        <Route path="/home" element={<HomePage movies={movies} />} />
-        <Route
-          path="/movies"
-          element={
-            <MoviesPage
-              handleSearch={handleSearch}
-              searchMovies={searchMovies}
+      <div className={Styles.background}>
+        <nav className={Styles.nav}>
+          <NavLink className={Styles.text} to="/">
+            Home
+          </NavLink>
+          <NavLink className={Styles.text} to="/movies">
+            Movies
+          </NavLink>
+        </nav>
+        <Routes>
+          <Route path="/" element={<HomePage movies={movies} />} />
+          <Route
+            path="/movies"
+            element={
+              <MoviesPage
+                handleSearch={handleSearch}
+                searchMovies={searchMovies}
+              />
+            }
+          />
+          <Route
+            path="/movies/:id"
+            element={
+              <MovieDetailsPage
+                handleMovieDetails={handleMovieDetails}
+                movie={movie}
+                error={error}
+                loading={loading}
+              />
+            }
+          >
+            <Route
+              handleCredits={handleCredits}
+              credits={credits}
+              path="cast"
+              element={<MovieCast />}
             />
-          }
-        />
-        <Route
-          path="/movies/:id"
-          element={
-            <MovieDetailsPage
-              fetchAndSetMovieDetails={fetchAndSetMovieDetails}
-              movie={movie}
-              error={error}
-              loading={loading}
+            <Route
+              handleReview={handleReviews}
+              reviews={reviews}
+              path="reviews"
+              element={<MovieReviews />}
             />
-          }
-        >
-          <Route path="cast" element={<MovieCast />} />
-          <Route path="reviews" element={<MovieReviews />} />
-        </Route>
-      </Routes>
+          </Route>
+
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </div>
     </>
   );
 };
