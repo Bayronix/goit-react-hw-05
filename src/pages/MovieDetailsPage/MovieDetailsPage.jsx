@@ -1,14 +1,33 @@
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
-import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 import Styles from "./MovieDetailsPage.module.css";
 import MovieCast from "../../components/MovieCast/MovieCast";
-const MovieDetailsPage = ({ handleMovieDetails, movie, error, loading }) => {
+import MovieReviews from "../../components/MovieReviews/MovieReviews";
+import { MovieDetailsApi } from "../../Api/Api";
+
+const MovieDetailsPage = () => {
   const { id } = useParams();
+  const [movie, setMovie] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    handleMovieDetails(id);
-  }, [id, handleMovieDetails]);
+    const fetchMovieDetails = async () => {
+      try {
+        const movieData = await MovieDetailsApi(id);
+        setMovie(movieData);
+        setError(null);
+      } catch (error) {
+        console.error("Error fetching movie details:", error);
+        setError("Failed to fetch movie details.");
+        setMovie(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMovieDetails();
+  }, [id]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -26,33 +45,29 @@ const MovieDetailsPage = ({ handleMovieDetails, movie, error, loading }) => {
   const votePercent = Math.round(movie.vote_average * 10);
 
   return (
-    <div>
-      <h2>{movie.title}</h2>
-      <img src={imageUrl} alt={movie.title} />
-      <p>User Score: {votePercent}%</p>
-      <p>Overview: {movie.overview}</p>
-      <p>Genres: {movie.genres.map((genre) => genre.name).join(", ")}</p>
-      <MovieCast />
+    <div className={Styles.divContainer}>
+      <h2 className={Styles.title}>{movie.title}</h2>
+      <img className={Styles.img} src={imageUrl} alt={movie.title} />
+      <div className={Styles.div}>
+        <p className={Styles.score}>
+          <span className={Styles.spanUser}>User Score:</span>
+          {votePercent}%
+        </p>
+        <p className={Styles.overview}>
+          <span className={Styles.spanOverview}>Overview:</span>{" "}
+          {movie.overview}
+        </p>
+        <p className={Styles.genres}>
+          <span className={Styles.spanGenres}>Genres:</span>{" "}
+          {movie.genres.map((genre) => genre.name).join(", ")}
+        </p>
+      </div>
+      <>
+        <MovieCast />
+        <MovieReviews />
+      </>
     </div>
   );
-};
-
-MovieDetailsPage.propTypes = {
-  handleMovieDetails: PropTypes.func.isRequired,
-  movie: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    poster_path: PropTypes.string,
-    vote_average: PropTypes.number.isRequired,
-    overview: PropTypes.string,
-    genres: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number,
-        name: PropTypes.string,
-      })
-    ),
-  }),
-  error: PropTypes.string,
-  loading: PropTypes.bool.isRequired,
 };
 
 export default MovieDetailsPage;

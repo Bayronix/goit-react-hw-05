@@ -1,8 +1,28 @@
-import PropTypes from "prop-types";
 import { Formik, Form, Field } from "formik";
 import { Link } from "react-router-dom";
 import Styles from "./MoviesPage.module.css";
-const MoviesPage = ({ handleSearch, searchMovies }) => {
+import { useState } from "react";
+import { SearchMoviesApi } from "../../Api/Api";
+
+const MoviesPage = () => {
+  const [searchMovies, setSearchMovies] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSearch = async (query) => {
+    setLoading(true);
+    try {
+      const searchResults = await SearchMoviesApi(query);
+      setSearchMovies(searchResults.results);
+      setError(null);
+    } catch (error) {
+      console.error("Error searching movies:", error);
+      setError("Failed to search movies.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <Formik
@@ -22,20 +42,19 @@ const MoviesPage = ({ handleSearch, searchMovies }) => {
         )}
       </Formik>
 
-      <ul className={Styles.ul}>
-        {searchMovies.map((movie) => (
-          <li className={Styles.ul} key={movie.id}>
-            <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
-          </li>
-        ))}
-      </ul>
+      {loading && <div>Loading...</div>}
+      {error && <div>{error}</div>}
+      {!loading && !error && (
+        <ul className={Styles.ul}>
+          {searchMovies.map((movie) => (
+            <li className={Styles.li} key={movie.id}>
+              <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
-};
-
-MoviesPage.propTypes = {
-  handleSearch: PropTypes.func.isRequired,
-  searchMovies: PropTypes.array.isRequired,
 };
 
 export default MoviesPage;

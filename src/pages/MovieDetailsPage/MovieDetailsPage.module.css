@@ -1,0 +1,48 @@
+.divContainer {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  border: 2px solid #00ff00;
+  box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+}
+
+.img {
+  width: 320px;
+  height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ff00ff;
+  box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+  margin-bottom: 20px;
+}
+.title {
+  color: #fff;
+  font-size: 40px;
+}
+.div {
+  padding: 20px;
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 zpx #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+  margin-bottom: 20px;
+}
+
+.score {
+  color: #fff;
+  font-size: 24px;
+  text-shadow: 0 0 2px #ff00ff, 0 0 4px #ff00ff, 0 0 8px #ff00ff;
+  font-size: 30px;
+}
+
+.overview {
+  color: #fff;
+  font-size: 16px;
+  text-shadow: 0 0 2px #00ff0070, 0 0 4px #00ff00, 0 0 8px #00ff00;
+  font-size: 20px;
+}
+
+.genres {
+  color: #fff;
+  font-size: 16px;
+  text-shadow: 0 0 2px #ff4d00, 0 0 4px #ff4d00, 0 0 8px #ff4d00;
+  font-size: 20px;
+}
