@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { MovieReviewsApi } from "../../Api/Api";
+import Styles from "./MovieReviews.module.css";
 
 const MovieReviews = () => {
   const { id } = useParams();
@@ -14,6 +15,7 @@ const MovieReviews = () => {
       setLoading(true);
       try {
         const response = await MovieReviewsApi(id);
+        console.log("API Response:", response);
         if (response && response.results) {
           setReviews(response.results);
           setError(null);
@@ -33,12 +35,19 @@ const MovieReviews = () => {
     }
   }, [showReview, id]);
 
-  const displayReviews = reviews.slice(0, 2);
+  const displayReviews = reviews.slice(0, 1);
 
   return (
-    <div>
-      <Link to="#" onClick={() => setShowReview(!showReview)}>
-        {showReview ? "Hide Reviews" : "Show Reviews"}
+    <div className={Styles.container}>
+      <Link
+        to={`/movies/${id}/cast`}
+        onClick={(e) => {
+          e.preventDefault();
+          setShowReview(!showReview);
+        }}
+        className={Styles.link}
+      >
+        {showReview ? "Hide Review" : "Show Review"}
       </Link>
       {loading && <div>Loading...</div>}
       {error && <div>{error}</div>}
@@ -46,14 +55,14 @@ const MovieReviews = () => {
         <ul>
           {displayReviews.map((review) => (
             <li key={review.id}>
-              <h3>{review.author}</h3>
-              <p>{review.content}</p>
+              <h3 className={Styles.h3}>{review.author}</h3>
+              <p className={Styles.p}>{review.content}</p>
             </li>
           ))}
         </ul>
       )}
       {showReview && !loading && !error && reviews.length === 0 && (
-        <p>No reviews available.</p>
+        <p className={Styles.Av}>No reviews available.</p>
       )}
     </div>
   );

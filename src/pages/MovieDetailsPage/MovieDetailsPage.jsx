@@ -4,6 +4,7 @@ import Styles from "./MovieDetailsPage.module.css";
 import MovieCast from "../../components/MovieCast/MovieCast";
 import MovieReviews from "../../components/MovieReviews/MovieReviews";
 import { MovieDetailsApi } from "../../Api/Api";
+import { Link } from "react-router-dom";
 
 const MovieDetailsPage = () => {
   const { id } = useParams();
@@ -46,6 +47,7 @@ const MovieDetailsPage = () => {
 
   return (
     <div className={Styles.divContainer}>
+      <Link to={`/`}>Go back</Link>
       <h2 className={Styles.title}>{movie.title}</h2>
       <img className={Styles.img} src={imageUrl} alt={movie.title} />
       <div className={Styles.div}>

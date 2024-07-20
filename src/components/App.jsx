@@ -32,7 +32,7 @@ const App = () => {
           Movies
         </NavLink>
       </nav>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div className={Styles.suspense}>Loading...</div>}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/movies" element={<MoviesPage />} />

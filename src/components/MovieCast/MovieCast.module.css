@@ -1,4 +1,43 @@
-ul {
+.firstul,
+.castList {
   list-style-type: none;
   padding: 0;
+  margin: 0;
+}
+
+.castList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: start;
+}
+
+.castList li {
+  flex: 0 1 200px;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+.additionalInfo {
+  color: red;
+  font-size: 20px;
+}
+
+.castName {
+  color: #fff;
+  font-size: 20px;
+}
+
+.castCharacter {
+  color: #fff;
+  font-size: 15px;
+}
+
+.link {
+  font-size: 1.2rem;
+  color: #ffffff;
+
+  padding: 10px 20px;
+  border-radius: 5px;
 }

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Styles from "./HomePage.module.css";
 import { TrendingMoviesApi } from "../../Api/Api";
+import { MdLocalMovies } from "react-icons/md";
 
 const HomePage = () => {
   const [movies, setMovies] = useState([]);
@@ -26,24 +27,29 @@ const HomePage = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className={Styles.loading}>Loading...</div>;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div className={Styles.error}>{error}</div>;
   }
 
   return (
-    <>
-      <h1 className={Styles.header}>Trending Today</h1>
+    <div className={Styles.container}>
+      <h1 className={Styles.header}>
+        <MdLocalMovies className={Styles.icon} />
+        Trending Today
+      </h1>
       <ul className={Styles.ul}>
         {movies.map((movie) => (
           <li className={Styles.li} key={movie.id}>
-            <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+            <Link to={`/movies/${movie.id}`} className={Styles.link}>
+              {movie.title}
+            </Link>
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 };
 
