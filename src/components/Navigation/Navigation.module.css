@@ -1,0 +1,26 @@
+.nav {
+  background-color: #0ff0fc;
+}
+
+.nav {
+  display: flex;
+  gap: 10px;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.nav a.active {
+  background-color: #8931c8;
+  transition: background-color 0.3s ease;
+}
+
+.nav a:hover {
+  background-color: #8d38c9;
+  color: white;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

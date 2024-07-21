@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Styles from "./HomePage.module.css";
 import { TrendingMoviesApi } from "../../Api/Api";
 import { MdLocalMovies } from "react-icons/md";
+import MovieList from "../../components/MovieList/MovieList";
 
 const HomePage = () => {
   const [movies, setMovies] = useState([]);
@@ -40,15 +40,7 @@ const HomePage = () => {
         <MdLocalMovies className={Styles.icon} />
         Trending Today
       </h1>
-      <ul className={Styles.ul}>
-        {movies.map((movie) => (
-          <li className={Styles.li} key={movie.id}>
-            <Link to={`/movies/${movie.id}`} className={Styles.link}>
-              {movie.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <MovieList movies={movies} />
     </div>
   );
 };

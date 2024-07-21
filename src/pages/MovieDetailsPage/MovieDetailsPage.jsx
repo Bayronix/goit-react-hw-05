@@ -1,13 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Styles from "./MovieDetailsPage.module.css";
-import MovieCast from "../../components/MovieCast/MovieCast";
-import MovieReviews from "../../components/MovieReviews/MovieReviews";
 import { MovieDetailsApi } from "../../Api/Api";
-import { Link } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 
 const MovieDetailsPage = () => {
-  const { id } = useParams();
+  const { movieid } = useParams();
   const [movie, setMovie] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -15,7 +13,7 @@ const MovieDetailsPage = () => {
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
-        const movieData = await MovieDetailsApi(id);
+        const movieData = await MovieDetailsApi(movieid);
         setMovie(movieData);
         setError(null);
       } catch (error) {
@@ -28,32 +26,35 @@ const MovieDetailsPage = () => {
     };
 
     fetchMovieDetails();
-  }, [id]);
+  }, [movieid]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className={Styles.loading}>Loading...</div>;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div className={Styles.error}>{error}</div>;
   }
 
   if (!movie) {
-    return <div>No movie data available.</div>;
+    return <div className={Styles.noData}>No movie data available.</div>;
   }
 
-  const imageUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+  const imageUrl = movie.poster_path
+    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+    : "https://via.placeholder.com/500x750"; // Placeholder image
   const votePercent = Math.round(movie.vote_average * 10);
 
   return (
     <div className={Styles.divContainer}>
-      <Link to={`/`}>Go back</Link>
+      <Link to={`/`} className={Styles.backLink}>
+        Go back
+      </Link>
       <h2 className={Styles.title}>{movie.title}</h2>
       <img className={Styles.img} src={imageUrl} alt={movie.title} />
-      <div className={Styles.div}>
+      <div className={Styles.details}>
         <p className={Styles.score}>
-          <span className={Styles.spanUser}>User Score:</span>
-          {votePercent}%
+          <span className={Styles.spanUser}>User Score:</span> {votePercent}%
         </p>
         <p className={Styles.overview}>
           <span className={Styles.spanOverview}>Overview:</span>{" "}
@@ -64,10 +65,22 @@ const MovieDetailsPage = () => {
           {movie.genres.map((genre) => genre.name).join(", ")}
         </p>
       </div>
-      <>
-        <MovieCast />
-        <MovieReviews />
-      </>
+      <div className={Styles.linkContainer}>
+        <p className={Styles.Additional}>Additional information</p>
+        <ul>
+          <li className={Styles.addContainer}>
+            <NavLink to="cast" className={Styles.navLink}>
+              Cast
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="reviews" className={Styles.navLink}>
+              Reviews
+            </NavLink>
+          </li>
+        </ul>
+        <Outlet />
+      </div>
     </div>
   );
 };

@@ -1,32 +1,46 @@
 import { Formik, Form, Field } from "formik";
-import { Link } from "react-router-dom";
-import Styles from "./MoviesPage.module.css";
-import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
+
+import { useState, useEffect } from "react";
 import { SearchMoviesApi } from "../../Api/Api";
+import MovieList from "../../components/MovieList/MovieList";
 
 const MoviesPage = () => {
   const [searchMovies, setSearchMovies] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const handleSearch = async (query) => {
-    setLoading(true);
-    try {
-      const searchResults = await SearchMoviesApi(query);
-      setSearchMovies(searchResults.results);
-      setError(null);
-    } catch (error) {
-      console.error("Error searching movies:", error);
-      setError("Failed to search movies.");
-    } finally {
-      setLoading(false);
-    }
+  const query = searchParams.get("query") || "";
+
+  useEffect(() => {
+    if (!query) return;
+
+    const fetchMovies = async () => {
+      setLoading(true);
+      try {
+        const searchResults = await SearchMoviesApi(query);
+        setSearchMovies(searchResults.results);
+        setError(null);
+      } catch (error) {
+        console.error("Error searching movies:", error);
+        setError("Failed to search movies.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMovies();
+  }, [query]);
+
+  const handleSearch = (query) => {
+    setSearchParams({ query });
   };
 
   return (
     <div>
       <Formik
-        initialValues={{ text: "" }}
+        initialValues={{ text: query }}
         onSubmit={(values, { setSubmitting }) => {
           handleSearch(values.text);
           setSubmitting(false);
@@ -44,15 +58,7 @@ const MoviesPage = () => {
 
       {loading && <div>Loading...</div>}
       {error && <div>{error}</div>}
-      {!loading && !error && (
-        <ul className={Styles.ul}>
-          {searchMovies.map((movie) => (
-            <li className={Styles.li} key={movie.id}>
-              <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
-            </li>
-          ))}
-        </ul>
-      )}
+      {!loading && !error && <MovieList movies={searchMovies} />}
     </div>
   );
 };
