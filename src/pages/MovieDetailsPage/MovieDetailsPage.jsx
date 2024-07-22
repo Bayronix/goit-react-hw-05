@@ -3,12 +3,15 @@ import { useEffect, useState } from "react";
 import Styles from "./MovieDetailsPage.module.css";
 import { MovieDetailsApi } from "../../Api/Api";
 import { Link, NavLink, Outlet } from "react-router-dom";
+import { useRef } from "react";
 
 const MovieDetailsPage = () => {
   const { movieid } = useParams();
   const [movie, setMovie] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const backLinkRef = useRef(location.state ?? "/");
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -47,9 +50,7 @@ const MovieDetailsPage = () => {
 
   return (
     <div className={Styles.divContainer}>
-      <Link to={`/`} className={Styles.backLink}>
-        Go back
-      </Link>
+      <Link to={backLinkRef.current}>Go back</Link>
       <h2 className={Styles.title}>{movie.title}</h2>
       <img className={Styles.img} src={imageUrl} alt={movie.title} />
       <div className={Styles.details}>

@@ -1,15 +1,24 @@
 // MovieList.js
-import { Link } from "react-router-dom";
+
+import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Styles from "./MovieList.module.css";
 
 const MovieList = ({ movies }) => {
+  const location = useLocation();
+
   return (
     <ul className={Styles.ul}>
       {movies.map((movie) => (
         <li className={Styles.li} key={movie.id}>
-          <Link to={`/movies/${movie.id}`} className={Styles.link}>
+          <Link
+            to={{
+              pathname: `/movies/${movie.id}`,
+              state: { from: location },
+            }}
+            className={Styles.link}
+          >
             {movie.title}
           </Link>
         </li>
